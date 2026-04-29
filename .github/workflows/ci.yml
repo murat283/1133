@@ -20,10 +20,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Build Docker image
+        run: docker build -t myapp:latest .
+
+      - name: Show images
+        run: docker images
+
       - name: Run container
-        run: |
-          docker run -d -p 8080:8080 myapp:latest
-          sleep 5
+        run: docker run -d -p 8080:8080 myapp:latest
 
       - name: Test container
         run: curl http://localhost:8080/health
