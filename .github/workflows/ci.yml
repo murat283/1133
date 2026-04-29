@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run app in background
+        run: |
+          python app.py &
+          sleep 3
+
+      - name: Run tests
+        run: pytest
+
+      - name: Build Docker image
+        run: docker build -t myapp:latest .
+
+      - name: Run container (deploy simulation)
+        run: |
+          docker run -d -p 8080:8080 myapp:latest
+          sleep 3
+          curl http://localhost:8080/health
