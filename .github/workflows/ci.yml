@@ -29,5 +29,11 @@ jobs:
       - name: Run container
         run: docker run -d -p 8080:8080 myapp:latest
 
+      - name: Wait for container
+        run: sleep 8
+
+      - name: Show container logs
+        run: docker logs $(docker ps -q)
+        
       - name: Test container
         run: curl http://localhost:8080/health
